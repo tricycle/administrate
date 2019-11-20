@@ -16,6 +16,10 @@
 
 ## Changes
 
+### 0.11.1
+
+Switch to Github Packages
+
 ### 0.11.0 (September 17, 2018)
 
 * [COMPAT] [#1260] Upgrade Ruby to 2.5.1.
