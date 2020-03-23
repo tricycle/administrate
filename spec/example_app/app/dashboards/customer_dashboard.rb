@@ -12,9 +12,10 @@ class CustomerDashboard < Administrate::BaseDashboard
     log_entries: Field::HasManyVariant.with_options(limit: 2, sort_by: :id),
     updated_at: Field::DateTime,
     kind: Field::Select.with_options(collection: Customer::KINDS),
-    country: Field::BelongsTo.with_options(
+    territory: Field::BelongsTo.with_options(
       primary_key: :code,
       foreign_key: :country_code,
+      class_name: "Country",
       searchable: true,
       searchable_field: "name",
     ),
@@ -28,9 +29,13 @@ class CustomerDashboard < Administrate::BaseDashboard
     :email,
     :email_subscriber,
     :kind,
-    :country,
+    :territory,
     :password,
   ].freeze
+
+  COLLECTION_FILTERS = {
+    vip: ->(resources) { resources.where(kind: :vip) },
+  }.freeze
 
   def display_resource(customer)
     customer.name

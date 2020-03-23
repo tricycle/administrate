@@ -1,4 +1,6 @@
-# Getting Started
+---
+title: Getting Started
+---
 
 Administrate is released as a Ruby gem, and can be installed on Rails
 applications version 4.2 or greater.
@@ -37,11 +39,11 @@ Rails.application.routes.draw do
     # Add dashboard for your models here
     resources :customers,
     resources :orders
-  
+
     root to: "customers#index" # <--- Root route
   end
  end
- ```
+```
 
 The routes can be customized to show or hide
 different models on the dashboard.
@@ -73,10 +75,19 @@ namespace :admin do
 end
 ```
 
+## Using a Custom Namespace
+
+Administrate supports using a namespace other than `Admin`, such as
+`Supervisor`. This will also change the route it's using:
+
+```sh
+rails generate administrate:install --namespace=supervisor
+```
+
 ## Keep Dashboards Updated as Model Attributes Change
 
-If you've installed Administrate and generated dashboards and _then_ 
-subsequently added attributes to your models you'll need to manually add 
+If you've installed Administrate and generated dashboards and _then_
+subsequently added attributes to your models you'll need to manually add
 these additions (or removals) to your dashboards.
 
 Example:
@@ -89,7 +100,7 @@ Example:
     the_new_attribute: Field::String,
     # ...
   }.freeze
-  
+
   SHOW_PAGE_ATTRIBUTES = [
     # ...
     :the_new_attribute,
@@ -101,7 +112,7 @@ Example:
     :the_new_attribute,
     # ...
   ].freeze
-  
+
   COLLECTION_ATTRIBUTES = [
     # ...
     :the_new_attribute, # if you want it on the index, also.
@@ -109,49 +120,9 @@ Example:
   ].freeze
 ```
 
-It's recommended that you make this change at the same time as you add the 
+It's recommended that you make this change at the same time as you add the
 attribute to the model.
 
-The alternative way to handle this is to re-run `rails g administrate:install` and 
-carefully pick through the diffs. This latter method is probably more cumbersome.
-
-## Rails API
-
-Since Rails 5.0, we've been able to have API only applications. Yet, sometimes
-we still want to have an admin. 
-
-To get this working, we recommend updating this config:
-
-```ruby
-# config/application.rb
-config.api_only = false
-```
-
-That means, when your app _boots_, we'll have access to flashes and such. We
-also don't use your `ApplicationController`. Instead, Administrate provides its
-own. Meaning you're free to specify `ActionController::API` as your parent
-controller to make sure no flash, session, or cookie middleware is used by your
-API.
-
-Alternatively, if your application needs to have `config.api_only = true`, we recommend you add the following lines to your `config/application.rb`
-
-```ruby
-# Enable Flash, Cookies, MethodOverride for Administrate Gem
-config.middleware.use ActionDispatch::Flash
-config.session_store :cookie_store
-config.middleware.use ActionDispatch::Cookies
-config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
-config.middleware.use ::Rack::MethodOverride
-```
-
-You must also ensure that all the required controller actions are available and accessible as routes since generators in API-only applications only generate some of the required actions. Here is an example:
-
-```ruby
-# routes.rb
-namespace :admin do
-  resources :name, only: %i(index show new create edit update destroy)
-end
-
-# names_controller.rb
-# Ensure each of those methods are defined
-```
+The alternative way to handle this is to re-run `rails g administrate:install`
+and carefully pick through the diffs. This latter method is probably more
+cumbersome.
